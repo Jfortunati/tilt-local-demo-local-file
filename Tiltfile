@@ -1,7 +1,7 @@
 # --- config you edit ---
 NS = 'testkube'                       # target namespace
-LOCAL_DIR = './sync_probe.txt'     # path on your laptop (repo-relative)
-REMOTE_DIR = '/data/repo/sync_probe.txt'      # exact path in the pod/PVC
+LOCAL_DIR = './basic-echo-sleep-local'     # path on your laptop (repo-relative)
+REMOTE_DIR = '/data/repo/basic-echo-sleep-local'      # exact path in the pod/PVC
 # ------------------------
 
 # 0) Create the PVC once (idempotent)
