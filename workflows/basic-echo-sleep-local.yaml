@@ -26,6 +26,40 @@ spec:
       match:
         name:
         - testkube2
+  services:
+    local-dev-looper:
+      content:
+        files:
+        - path: /scripts/check.sh
+          content: |
+            #!/bin/sh
+            set -euo pipefail
+            MOUNT_PATH="/data/repo"
+            DIR_TO_FIND="basic-echo-sleep-local"
+            FULL_PATH="$MOUNT_PATH/$DIR_TO_FIND"
+            echo "--- File Sync Check Service ---"
+            echo "Waiting for directory to appear at: $FULL_PATH"
+            echo "(This directory should be created on your local machine and synced by Tilt)"
+            while true; do
+              if [ -d "$FULL_PATH" ]; then
+                echo "Success! Directory '$FULL_PATH' found."
+                exit 0
+              fi
+              echo "Directory not found yet. Retrying in 5 seconds..."
+              sleep 5
+            done
+      pod:
+        volumes:
+        - name: devcode
+          persistentVolumeClaim:
+            claimName: tilt-dev-pvc
+      image: bash:devel-alpine3.22
+      command:
+      - /bin/sh
+      - /scripts/check.sh
+      volumeMounts:
+      - name: devcode
+        mountPath: /data/repo
   steps:
   - name: Sleeping...
     run:
@@ -80,7 +114,6 @@ spec:
               .     :     .
 status:
   health:
-    passRate: 0.6
-    flipRate: 0.2222222222222222
-    overallHealth: 0.4666666666666667
-
+    passRate: 1
+    flipRate: 0
+    overallHealth: 1
